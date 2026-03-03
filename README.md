@@ -52,9 +52,6 @@ npm install
 cp .env.example .env
 # Edit .env with your Telegram bot token
 
-# Start Redis (if not running)
-redis-server &
-
 # Start the gateway
 npm run gateway
 
@@ -104,7 +101,6 @@ File-based persistence:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `REDIS_URL` | `redis://localhost:6379` | Redis connection |
 | `PORT` | `3100` | Gateway port |
 | `TMUX_SESSION` | `cc-pichu:0.0` | tmux target |
 | `TELEGRAM_BOT_TOKEN_PICHU` | - | Your Telegram bot token |
@@ -118,7 +114,6 @@ File-based persistence:
 ## Requirements
 
 - Node.js 18+
-- Redis
 - tmux
 - [Claude Code CLI](https://claude.ai/code)
 - Telegram Bot Token

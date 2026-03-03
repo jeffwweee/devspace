@@ -36,7 +36,6 @@ Telegram → Gateway (port 3100) → tmux injection → Pichu → Subagents
 
 ## Environment Variables
 
-- `REDIS_URL` - Redis connection (default: redis://localhost:6379)
 - `PORT` - Gateway port (default: 3100)
 - `TMUX_SESSION` - tmux target (default: cc-pichu:0.0)
 - `TELEGRAM_BOT_TOKEN_PICHU` - Bot token for Pichu

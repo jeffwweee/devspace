@@ -1,5 +1,4 @@
 import express from 'express';
-import Redis from 'ioredis';
 import { execFileSync } from 'child_process';
 import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
 import { join, basename } from 'path';
@@ -9,7 +8,6 @@ import { convert } from 'telegram-markdown-v2';
 const app = express();
 app.use(express.json());
 
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 const TMUX_SESSION = process.env.TMUX_SESSION || 'cc-pichu:0.0';
 const TMUX_DELAY_MS = parseInt(process.env.TMUX_DELAY_MS || '500', 10);
 const FILES_DIR = join(process.cwd(), 'state', 'files');
@@ -39,7 +37,7 @@ async function downloadTelegramFile(botToken: string, fileId: string, localPath:
 // Health check
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
-// Webhook endpoint - receives from Telegram, stores in Redis, injects to tmux
+// Webhook endpoint - receives from Telegram, injects to tmux
 app.post('/webhook/:botId', async (req, res) => {
   const { botId } = req.params;
   const message = req.body.message;
@@ -52,7 +50,6 @@ app.post('/webhook/:botId', async (req, res) => {
   const chatId = message.chat.id;
   const messageId = message.message_id;
   const text = message.text || message.caption || '';
-  const username = message.from?.username || 'unknown';
   const replyTo = message.reply_to_message?.message_id || 0;
 
   // Get bot token for file downloads
@@ -81,15 +78,6 @@ app.post('/webhook/:botId', async (req, res) => {
   } catch (err) {
     console.error('File download failed:', err);
   }
-
-  // Store in Redis for context
-  await redis.hset(`tg:session:${chatId}`, {
-    bot_id: botId,
-    chat_id: chatId,
-    username,
-    last_message: text,
-    last_activity: Date.now().toString()
-  });
 
   // Inject to Pichu's tmux session
   // Format: [TG:chat_id:bot_id:msg_id:reply_to][FILE:/path] message

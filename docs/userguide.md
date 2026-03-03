@@ -1,6 +1,6 @@
-# Pichu User Guide
+# Dev Workspace 2.0 User Guide
 
-Comprehensive documentation for the Pichu Telegram Agent System.
+Comprehensive documentation for the Dev Workspace Telegram system.
 
 ## Table of Contents
 
@@ -70,7 +70,6 @@ Pichu implements a multi-agent architecture with clear separation of concerns:
 2. **Telegram POSTs** to `/webhook/:botId` on the gateway
 3. **Gateway**:
    - Downloads any attached files
-   - Stores session data in Redis
    - Formats message with prefix: `[TG:chat_id:bot_id:msg_id:reply_to][FILE:/path] message`
    - Injects to tmux session via `send-keys`
 4. **Pichu** receives the message in Claude Code:
@@ -97,7 +96,6 @@ Pichu implements a multi-agent architecture with clear separation of concerns:
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `TELEGRAM_BOT_TOKEN_PICHU` | Yes | - | Bot token from @BotFather |
-| `REDIS_URL` | No | `redis://localhost:6379` | Redis connection string |
 | `PORT` | No | `3100` | Gateway server port |
 | `TMUX_SESSION` | No | `cc-pichu:0.0` | Target tmux session:window.pane |
 | `TMUX_DELAY_MS` | No | `500` | Delay before sending Enter key |
@@ -117,20 +115,6 @@ Register each bot:
 ```bash
 curl -X POST http://localhost:3100/register/pichu
 curl -X POST http://localhost:3100/register/assistant
-```
-
-### Redis Configuration
-
-Redis stores session metadata:
-
-```
-tg:session:CHAT_ID = {
-  bot_id: "pichu",
-  chat_id: 123456789,
-  username: "user",
-  last_message: "Hello",
-  last_activity: 1709500000000
-}
 ```
 
 ---
@@ -419,28 +403,6 @@ curl -X POST http://localhost:3100/register/pichu
 ```bash
 ngrok http 3100
 # Use the ngrok URL as WEBHOOK_URL
-```
-
-### Redis Issues
-
-#### Connection Refused
-
-```bash
-# Start Redis
-redis-server
-
-# Or with specific config
-redis-server /path/to/redis.conf
-```
-
-#### Redis Not Responding
-
-```bash
-# Check Redis status
-redis-cli ping
-
-# Check Redis info
-redis-cli info
 ```
 
 ### tmux Issues

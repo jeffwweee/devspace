@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get Pichu running in about 5 minutes.
+Get Dev Workspace running in about 5 minutes.
 
 ## Prerequisites
 
@@ -9,7 +9,6 @@ Before starting, ensure you have the following installed:
 | Requirement | Version | Check Command |
 |-------------|---------|---------------|
 | Node.js | 18+ | `node --version` |
-| Redis | Any | `redis-cli ping` |
 | tmux | Any | `tmux -V` |
 | jq | Any | `jq --version` |
 | Claude Code CLI | Latest | `claude --version` |
@@ -18,8 +17,8 @@ Before starting, ensure you have the following installed:
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/pichu-telegram-agent.git
-cd pichu-telegram-agent
+git clone https://github.com/jeffwweee/dev-workspace-2.0.git
+cd dev-workspace-2.0
 
 # Install dependencies
 npm install
@@ -40,7 +39,6 @@ Create a `.env` file in the project root:
 TELEGRAM_BOT_TOKEN_PICHU=your_bot_token_here
 
 # Optional (defaults shown)
-REDIS_URL=redis://localhost:6379
 PORT=3100
 TMUX_SESSION=cc-pichu:0.0
 WEBHOOK_URL=https://your-domain.com
@@ -48,18 +46,7 @@ WEBHOOK_URL=https://your-domain.com
 
 **Note:** `WEBHOOK_URL` is only needed if running on a public server. For local testing, you can use a tunneling service like [ngrok](https://ngrok.com/).
 
-## Step 4: Start Redis
-
-```bash
-# If Redis is not running
-redis-server &
-
-# Verify Redis is running
-redis-cli ping
-# Should return: PONG
-```
-
-## Step 5: Start the Gateway
+## Step 4: Start the Gateway
 
 ```bash
 npm run gateway
@@ -70,7 +57,7 @@ You should see:
 Gateway listening on 3100
 ```
 
-## Step 6: Register the Bot (Public Server Only)
+## Step 5: Register the Bot (Public Server Only)
 
 If running on a public server with `WEBHOOK_URL` set:
 
@@ -92,7 +79,7 @@ WEBHOOK_URL=https://abc123.ngrok.io npm run gateway
 curl -X POST http://localhost:3100/register/pichu
 ```
 
-## Step 7: Start Pichu Session
+## Step 6: Start Pichu Session
 
 Open a new terminal and run:
 
@@ -105,7 +92,7 @@ In the tmux session:
 1. Run `claude` to start Claude Code
 2. Type `/commander` to load the Pichu skill
 
-## Step 8: Test the Bot
+## Step 7: Test the Bot
 
 1. Open Telegram and find your bot
 2. Send a message like "Hello, Pichu!"
@@ -120,13 +107,6 @@ In the tmux session:
 Check if port 3100 is already in use:
 ```bash
 lsof -i :3100
-```
-
-### Redis connection failed
-
-Ensure Redis is running:
-```bash
-redis-cli ping
 ```
 
 ### Messages not reaching Pichu

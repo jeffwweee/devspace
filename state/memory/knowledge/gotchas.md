@@ -13,7 +13,7 @@ Things to avoid based on lessons learned.
 - Use strategic compact at logical boundaries
 
 ## Message Loss
-- Redis provides backup for session context
+- File-based memory persists across sessions
 - tmux logs can be reviewed if needed
 
 ## Subagent Communication
