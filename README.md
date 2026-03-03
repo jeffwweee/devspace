@@ -42,8 +42,8 @@ Dev Workspace is your always-on development assistant that lives in a tmux sessi
 
 ```bash
 # Clone the repository
-git clone https://github.com/jeffwweee/dev-workspace-2.0.git
-cd dev-workspace-2.0
+git clone https://github.com/jeffwweee/devspace.git
+cd devspace
 
 # Install dependencies
 npm install

@@ -15,7 +15,7 @@ Production Ready + Scaling Up
 - 2026-03-03: Memory persistence test passed (session restart)
 - 2026-03-03: Subagent spawning tested - slash commands & markdownv2 implemented
 - 2026-03-03: 3 new features: file upload, file attachment, reply threading
-- 2026-03-03: GitHub repo created: github.com/jeffwweee/dev-workspace-2.0
+- 2026-03-03: GitHub repo created: github.com/jeffwweee/devspace
 - 2026-03-03: Documentation complete: README, quickstart, userguide
 - 2026-03-03: Redis removed - simplified stack
 - 2026-03-03: Tunnel docs added (Cloudflare + ngrok)

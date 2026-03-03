@@ -512,7 +512,7 @@ After=network.target
 [Service]
 Type=simple
 User=youruser
-WorkingDirectory=/path/to/dev-workspace-2.0
+WorkingDirectory=/path/to/devspace
 ExecStart=/usr/bin/npm run gateway
 Restart=always
 
