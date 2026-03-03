@@ -189,10 +189,25 @@ If message starts with `/`, handle as command:
 |---------|--------|
 | /status | Show running task status + pending notifications |
 | /stop | Stop current background task (TaskStop) |
+| /memory | Load memory files (project-status, preferences, coding-standards) |
 | /clear | Reset session file |
 | /compact | Trigger strategic compact |
 | /save | Force memory update |
 | /tasks | List recent task files |
+
+### /memory Command
+
+Load memory files on demand:
+
+```bash
+# Load all memory files
+cat state/memory/project-status.md
+cat state/memory/preferences.md
+cat state/memory/coding-standards.md
+cat state/memory/phrases.md
+```
+
+Then acknowledge: "Memory loaded."
 
 ## Critical Rules
 
