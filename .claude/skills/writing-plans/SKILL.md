@@ -96,21 +96,16 @@ git commit -m "feat: add specific feature"
 
 ## Execution Handoff
 
-After saving the plan, offer execution choice:
+After saving the plan, ask user to start background execution:
 
-**"Plan complete and saved to `docs/plans/<filename>.md`. Two execution options:**
+**"Plan saved to `docs/plans/<filename>.md`. Start background execution now?"**
 
-**1. Subagent-Driven (this session)** - I dispatch fresh subagent per task, review between tasks, fast iteration
+**If user approves (yes/go/start/approve):**
+- **REQUIRED SUB-SKILL:** Use `background-tasks` skill
+- Plan executes in background
+- Pichu stays responsive to new messages
+- Smart notification when complete
 
-**2. Parallel Session (separate)** - Open new session with executing-plans, batch execution with checkpoints
-
-**Which approach?"**
-
-**If Subagent-Driven chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development
-- Stay in this session
-- Fresh subagent per task + code review
-
-**If Parallel Session chosen:**
-- Guide them to open new session in worktree
-- **REQUIRED SUB-SKILL:** New session uses superpowers:executing-plans
+**If user declines:**
+- Plan is saved and ready for later
+- User can start execution anytime by saying "execute the plan"

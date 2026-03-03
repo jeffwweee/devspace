@@ -1,16 +1,18 @@
-# Session Template
-
-Copy to {chat_id}.md when starting a new session.
+# Session: Chat {chat_id}
 
 ## Context
-- username: {username}
-- started: {timestamp}
+- User: {username}
+- Started: {timestamp}
+- Last active: {timestamp}
 
 ## Current Mode
 idle
 
 ## Active Task
 None
+
+## Recent Topics
+- (tracked automatically)
 
 ## Recent Messages
 ### User ({time})
