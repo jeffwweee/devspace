@@ -1,0 +1,56 @@
+{
+  "skill_name": "using-skill",
+  "evals": [
+    {
+      "id": 1,
+      "name": "new-feature-should-trigger-skill-check",
+      "prompt": "I want to add a new feature to my app - a user profile page with avatar upload",
+      "expected_output": "Should invoke a skill (like brainstorming or planning) before diving into implementation. Should NOT immediately start coding or ask clarifying questions without checking for relevant skills first.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "checks_for_skills_before_responding",
+          "description": "Claude should invoke or check for relevant skills before providing any response"
+        },
+        {
+          "name": "does_not_rationalize_skipping",
+          "description": "Claude should not use phrases like 'just a simple question' or 'let me first explore' as excuses to skip skill checking"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "simple-question-still-checks-skills",
+      "prompt": "Quick question - what's the difference between let and const in JavaScript?",
+      "expected_output": "Even for simple questions, Claude should briefly acknowledge checking for relevant skills (or note that no skill applies after checking) before answering.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "does_not_skip_due_to_simplicity",
+          "description": "Should not assume 'simple question' means no skill check needed"
+        },
+        {
+          "name": "provides_answer_after_check",
+          "description": "After checking, should provide a clear answer about let vs const"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "bug-fix-follows-priority",
+      "prompt": "There's a bug in my authentication middleware - users are getting logged out randomly",
+      "expected_output": "Should check for debugging/process skills first (before implementation skills), following the priority rule: process skills before implementation skills.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "prioritizes_process_skills",
+          "description": "Should invoke debugging or process skill before any implementation-specific skill"
+        },
+        {
+          "name": "does_not_jump_to_code",
+          "description": "Should not immediately start writing code without following a debugging process"
+        }
+      ]
+    }
+  ]
+}

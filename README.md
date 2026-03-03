@@ -74,6 +74,7 @@ For detailed setup instructions, see the [Quick Start Guide](docs/quickstart.md)
 | **Threaded Replies** | Messages can be threaded for context |
 | **Fresh Subagents** | Implementation tasks run in isolated processes |
 | **Slash Commands** | `/status`, `/stop`, `/clear`, `/compact` |
+| **Superpowers Workflow** | Brainstorm → Plan → Delegate → Review → Complete |
 
 ## Components
 
@@ -106,10 +107,24 @@ File-based persistence:
 | `TELEGRAM_BOT_TOKEN_PICHU` | - | Your Telegram bot token |
 | `WEBHOOK_URL` | - | Public URL for webhook (e.g., Cloudflare tunnel) |
 
+## Workflow Skills
+
+Dev Workspace uses a structured development workflow:
+
+| Skill | Purpose |
+|------|---------|
+| `brainstorming` | Explore requirements before implementation |
+| `writing-plans` | Create bite-sized implementation tasks |
+| `subagent-driven-development` | Execute with fresh subagents + reviews |
+| `verification-before-completion` | Verify before claiming completion |
+
+**Workflow:** Brainstorm → Plan → Delegate → Review → Complete
+
 ## Documentation
 
 - [Quick Start Guide](docs/quickstart.md) - Get running in ~5 minutes
 - [User Guide](docs/userguide.md) - Full documentation
+- [Plans Directory](docs/plans/) - Design docs and implementation plans
 
 ## Requirements
 
