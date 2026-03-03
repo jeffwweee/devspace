@@ -17,6 +17,7 @@ When starting a new session:
    - `state/memory/project-status.md`
    - `state/memory/preferences.md`
    - `state/memory/coding-standards.md`
+   - `state/memory/phrases.md`
 2. **Load session state** for current chat (`state/sessions/{chat_id}.md`)
 3. **Wait for messages** (injected via tmux)
 
@@ -91,6 +92,14 @@ $PROJECT_ROOT/scripts/reply.sh EXTRACTED_BOT_ID EXTRACTED_CHAT_ID "Contextual AC
 | "status" | "Checking status..." |
 | "hello" | "Hi! How can I help?" |
 
+### Step 2b: Start typing indicator (for long operations)
+
+For tasks that take more than a few seconds, start typing indicator AFTER ACK:
+
+```bash
+$PROJECT_ROOT/scripts/typing.sh EXTRACTED_BOT_ID EXTRACTED_CHAT_ID
+```
+
 ### Step 3: Detect Intent (using-skill)
 
 **Use the `using-skill` skill to determine task type:**
@@ -98,7 +107,7 @@ $PROJECT_ROOT/scripts/reply.sh EXTRACTED_BOT_ID EXTRACTED_CHAT_ID "Contextual AC
 | Intent | Action |
 |--------|--------|
 | **brainstorm/design** | Use `brainstorming` skill |
-| **implement/build** | Use `subagent-driven-development` skill |
+| **implement/build** | Use `background-tasks` skill (if plan exists) |
 | **status/question** | Answer directly |
 
 ### Step 4: Execute
@@ -116,16 +125,66 @@ $PROJECT_ROOT/scripts/reply.sh EXTRACTED_BOT_ID EXTRACTED_CHAT_ID "Contextual AC
 $PROJECT_ROOT/scripts/reply.sh EXTRACTED_BOT_ID EXTRACTED_CHAT_ID "Your full response..." "EXTRACTED_MSG_ID"
 ```
 
+## Task State Management
+
+Pichu tracks background tasks per chat using `state/tasks/{chat_id}.md`.
+
+### On each message:
+
+1. **Check for smart notification:**
+```bash
+# After parsing message, before ACK
+if [ "$(./scripts/task-state.sh has_pending_notification $CHAT_ID)" = "true" ] && \
+   [ "$(./scripts/task-state.sh check_idle $CHAT_ID 60)" = "true" ]; then
+    SUMMARY=$(./scripts/task-state.sh get_notification_summary $CHAT_ID)
+    ./scripts/reply.sh $BOT_ID $CHAT_ID "Background task done! $SUMMARY"
+    ./scripts/task-state.sh clear_notification $CHAT_ID
+fi
+```
+
+2. **Update last message time:**
+```bash
+./scripts/task-state.sh update_last_message $CHAT_ID $MSG_ID
+```
+
+3. **Check for running task before starting new one:**
+```bash
+STATUS=$(./scripts/task-state.sh get_status $CHAT_ID)
+TASK_ID=$(./scripts/task-state.sh get_task_id $CHAT_ID)
+
+if [ "$STATUS" = "running" ]; then
+    case "$MESSAGE" in
+        /status)
+            # Report task status
+            ./scripts/reply.sh $BOT_ID $CHAT_ID "Task $TASK_ID still running..."
+            ;;
+        /stop)
+            # Stop the task
+            TaskStop(task_id=$TASK_ID)
+            ./scripts/task-state.sh set_failed $CHAT_ID $TASK_ID "Stopped by user"
+            ./scripts/reply.sh $BOT_ID $CHAT_ID "Task stopped."
+            ;;
+        *)
+            # User chatting while task runs - respond briefly
+            ./scripts/reply.sh $BOT_ID $CHAT_ID "Still working on background task. /status for update."
+            ;;
+    esac
+    return  # Don't start new task
+fi
+```
+
 ## Command Detection
 
 If message starts with `/`, handle as command:
 
 | Command | Action |
 |---------|--------|
-| /stop | Stop running task (TaskStop) |
+| /status | Show running task status + pending notifications |
+| /stop | Stop current background task (TaskStop) |
 | /clear | Reset session file |
 | /compact | Trigger strategic compact |
-| /status | Report from project-status.md |
+| /save | Force memory update |
+| /tasks | List recent task files |
 
 ## Critical Rules
 
@@ -135,6 +194,18 @@ If message starts with `/`, handle as command:
 4. **SEND ACK FIRST** - Always acknowledge before processing
 5. **USE WORKFLOW SKILLS** - Use `using-skill` to detect intent, `subagent-driven-development` for implementation
 
+## Phrase Selection
+
+When sending ACKs and responses, use varied phrases from `state/memory/phrases.md`:
+
+| Situation | Category | Example |
+|-----------|----------|---------|
+| Acknowledging new message | ack | "Got it, working on that..." |
+| Long operation update | progress | "Still crunching..." |
+| Task completed | complete | "Done! Here's the result..." |
+
+Select randomly from the appropriate category. Do not repeat the same phrase consecutively.
+
 ## Workflow Skills
 
 | Skill | When to Use |
@@ -142,7 +213,8 @@ If message starts with `/`, handle as command:
 | `using-skill` | Detect intent before processing |
 | `brainstorming` | Creative work - features, components, functionality |
 | `writing-plans` | After design approved - create implementation plan |
-| `subagent-driven-development` | Execute implementation plans with fresh subagents + reviews |
+| `background-tasks` | After plan approved - execute in background |
+| `subagent-driven-development` | Used by background-tasks for actual execution |
 | `verification-before-completion` | Before claiming work is complete |
 
 ## Memory Files

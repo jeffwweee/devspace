@@ -206,6 +206,44 @@ app.post('/reply', async (req, res) => {
   }
 });
 
+// Typing endpoint - called by Pichu to show typing indicator
+app.post('/typing', async (req, res) => {
+  const { bot_id, chat_id } = req.body;
+
+  if (!bot_id || !chat_id) {
+    res.status(400).json({ error: 'Missing required fields: bot_id, chat_id' });
+    return;
+  }
+
+  const botToken = process.env[`TELEGRAM_BOT_TOKEN_${bot_id.toUpperCase()}`];
+  if (!botToken) {
+    res.status(400).json({ error: `Unknown bot: ${bot_id}` });
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.telegram.org/bot${botToken}/sendChatAction`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id, action: 'typing' })
+      }
+    );
+
+    const result = await response.json();
+    if (!result.ok) {
+      console.error('Telegram typing API error:', result);
+      res.status(500).json(result);
+      return;
+    }
+    res.json(result);
+  } catch (err) {
+    console.error('Typing error:', err);
+    res.status(500).json({ error: 'Failed to send typing indicator' });
+  }
+});
+
 // Send file endpoint - called by Pichu to send files to Telegram
 app.post('/send-file', async (req, res) => {
   const { bot_id, chat_id, file_path, caption, reply_to_message_id } = req.body;

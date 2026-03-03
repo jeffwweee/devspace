@@ -75,6 +75,37 @@ digraph brainstorming {
 - Cover: architecture, components, data flow, error handling, testing
 - Be ready to go back and clarify if something doesn't make sense
 
+## Telegram Mode
+
+When running in Commander context (Telegram), use Telegram-specific question handling:
+
+**DO NOT use AskUserQuestion** - the interactive UI is not visible to Telegram users.
+
+**Instead, use reply.sh:**
+```bash
+$PROJECT_ROOT/scripts/reply.sh $BOT_ID $CHAT_ID "Your question here
+
+A) Option one
+B) Option two
+C) Option three
+
+Reply A, B, or C" $MSG_ID
+```
+
+**Format for multiple choice:**
+- Letter each option (A, B, C)
+- One line per option
+- End with "Reply X, Y, or Z"
+
+**Wait for response:**
+- Response comes via tmux injection
+- Parse the next `[TG:...]` message for the user's answer
+- Continue brainstorming flow
+
+**Open-ended questions:**
+- Just ask the question without options
+- Wait for tmux injection with response
+
 ## After the Design
 
 **Documentation:**
