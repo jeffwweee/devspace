@@ -17,8 +17,8 @@ Before starting, ensure you have the following installed:
 
 ```bash
 # Clone the repository
-git clone https://github.com/jeffwweee/dev-workspace-2.0.git
-cd dev-workspace-2.0
+git clone https://github.com/jeffwweee/devspace.git
+cd devspace
 
 # Install dependencies
 npm install
