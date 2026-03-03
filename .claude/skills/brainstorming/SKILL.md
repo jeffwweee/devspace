@@ -82,6 +82,18 @@ digraph brainstorming {
 - Use elements-of-style:writing-clearly-and-concisely skill if available
 - Commit the design document to git
 
+**User feedback:**
+- After writing the design document, send it to user for approval via Telegram
+
+```bash
+~/dev-workspace-v2/scripts/send-file.sh pichu $CHAT_ID docs/plans/YYYY-MM-DD-<topic>-design.md "Design doc for <topic> - please review and approve" $MSG_ID
+```
+
+- Wait for user response:
+  - **Approved** → Proceed to invoke writing-plans skill
+  - **Changes requested** → Revise design, resend, repeat until approved
+  - **Rejected** → Discuss alternatives, go back to "Ask clarifying questions"
+
 **Implementation:**
 - Invoke the writing-plans skill to create a detailed implementation plan
 - Do NOT invoke any other skill. writing-plans is the next step.
