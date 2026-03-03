@@ -11,7 +11,8 @@ Comprehensive documentation for the Dev Workspace Telegram system.
 5. [File Upload and Analysis](#file-upload-and-analysis)
 6. [Reply Threading](#reply-threading)
 7. [Sending Files](#sending-files)
-8. [Troubleshooting](#troubleshooting)
+8. [Tunnel Configuration](#tunnel-configuration)
+9. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -370,6 +371,160 @@ Send as reply:
 - Share generated code files
 - Send analysis reports
 - Provide exported data
+
+---
+
+---
+
+## Tunnel Configuration
+
+For Telegram to send webhooks to your gateway, you need a publicly accessible URL. This section covers both testing and production setups.
+
+### ngrok (Testing/Development)
+
+ngrok provides instant public URLs for testing.
+
+**Installation:**
+```bash
+# Download from ngrok.com or use package manager
+brew install ngrok  # macOS
+sudo snap install ngrok  # Linux
+```
+
+**Usage:**
+```bash
+# Start tunnel to gateway
+ngrok http 3100
+
+# You'll see output like:
+# Forwarding  https://abc123.ngrok.io -> http://localhost:3100
+```
+
+**Configure Dev Workspace:**
+```bash
+# In .env
+WEBHOOK_URL=https://abc123.ngrok.io
+
+# Restart gateway and register
+npm run gateway
+curl -X POST http://localhost:3100/register/pichu
+```
+
+**Limitations:**
+- Free tier: Random URLs that change on restart
+- Paid tier: Custom subdomains available
+
+### Cloudflare Tunnel (Production)
+
+Cloudflare Tunnel provides persistent URLs with your own domain, no port forwarding required.
+
+**Prerequisites:**
+- Domain managed by Cloudflare
+- cloudflared installed
+
+**Installation:**
+```bash
+# Download from developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/
+# Or use package manager
+brew install cloudflared  # macOS
+```
+
+**Setup:**
+
+1. **Authenticate:**
+```bash
+cloudflared tunnel login
+```
+
+2. **Create tunnel:**
+```bash
+cloudflared tunnel create dev-workspace
+# Output: Tunnel credentials written to ~/.cloudflared/<uuid>.json
+```
+
+3. **Configure DNS:**
+```bash
+# Link subdomain to tunnel
+cloudflared tunnel route dns dev-workspace rx78.yourdomain.cc
+```
+
+4. **Create config file** `~/.cloudflared/config.yml`:
+```yaml
+tunnel: <your-tunnel-id>
+credentials-file: /home/you/.cloudflared/<tunnel-id>.json
+
+ingress:
+  - hostname: rx78.yourdomain.cc
+    service: http://localhost:3100
+  - service: http_status:404
+```
+
+5. **Run tunnel:**
+```bash
+# Test run
+cloudflared tunnel run dev-workspace
+
+# Or run as service (Linux)
+sudo cloudflared service install
+sudo systemctl start cloudflared
+```
+
+**Configure Dev Workspace:**
+```bash
+# In .env
+WEBHOOK_URL=https://rx78.yourdomain.cc
+
+# Start gateway and register
+npm run gateway
+curl -X POST http://localhost:3100/register/pichu
+```
+
+**Example Config (rx78.jeffwweee.cc):**
+```yaml
+tunnel: abc123-def456-ghi789
+credentials-file: /home/jeffwweee/.cloudflared/abc123-def456-ghi789.json
+
+ingress:
+  - hostname: rx78.jeffwweee.cc
+    service: http://localhost:3100
+  - service: http_status:404
+```
+
+### Verifying Tunnel Connection
+
+```bash
+# Test webhook endpoint through tunnel
+curl https://rx78.yourdomain.cc/health
+# Should return: {"status":"ok"}
+
+# Check Telegram webhook status
+curl https://api.telegram.org/botYOUR_TOKEN/getWebhookInfo
+```
+
+### Running as Systemd Service (Linux)
+
+Create `/etc/systemd/system/dev-workspace.service`:
+```ini
+[Unit]
+Description=Dev Workspace Gateway
+After=network.target
+
+[Service]
+Type=simple
+User=youruser
+WorkingDirectory=/path/to/dev-workspace-2.0
+ExecStart=/usr/bin/npm run gateway
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+```bash
+sudo systemctl enable dev-workspace
+sudo systemctl start dev-workspace
+```
 
 ---
 

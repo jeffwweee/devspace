@@ -67,19 +67,66 @@ curl -X POST http://localhost:3100/register/pichu
 
 This registers the webhook and slash commands with Telegram.
 
-For local testing with ngrok:
+## Step 6: Set Up Tunnel (Optional)
+
+For Telegram to reach your gateway, you need a public URL. Choose one:
+
+### Option A: ngrok (Quick Testing)
+
 ```bash
-# In another terminal
+# Install ngrok, then:
 ngrok http 3100
 
-# Use the ngrok URL
-WEBHOOK_URL=https://abc123.ngrok.io npm run gateway
+# Copy the HTTPS URL (e.g., https://abc123.ngrok.io)
+# Update .env:
+WEBHOOK_URL=https://abc123.ngrok.io
 
-# Register
+# Restart gateway and register
+npm run gateway
 curl -X POST http://localhost:3100/register/pichu
 ```
 
-## Step 6: Start Pichu Session
+### Option B: Cloudflare Tunnel (Production)
+
+**Prerequisites:** Domain on Cloudflare, cloudflared installed
+
+1. **Create tunnel** (one-time setup):
+```bash
+cloudflared tunnel create dev-workspace
+# Note the tunnel ID
+```
+
+2. **Configure DNS** (link subdomain to tunnel):
+```bash
+cloudflared tunnel route dns dev-workspace rx78.yourdomain.cc
+```
+
+3. **Create config file** `~/.cloudflared/config.yml`:
+```yaml
+tunnel: <your-tunnel-id>
+credentials-file: /home/you/.cloudflared/<tunnel-id>.json
+
+ingress:
+  - hostname: rx78.yourdomain.cc
+    service: http://localhost:3100
+  - service: http_status:404
+```
+
+4. **Run tunnel**:
+```bash
+cloudflared tunnel run dev-workspace
+```
+
+5. **Update .env and register**:
+```bash
+WEBHOOK_URL=https://rx78.yourdomain.cc
+npm run gateway
+curl -X POST http://localhost:3100/register/pichu
+```
+
+**Tip:** Run cloudflared as a systemd service for auto-start on boot.
+
+## Step 7: Start Pichu Session
 
 Open a new terminal and run:
 
@@ -92,7 +139,7 @@ In the tmux session:
 1. Run `claude` to start Claude Code
 2. Type `/commander` to load the Pichu skill
 
-## Step 7: Test the Bot
+## Step 8: Test the Bot
 
 1. Open Telegram and find your bot
 2. Send a message like "Hello, Pichu!"
