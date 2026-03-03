@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node /home/jeffwweee/jef/development-workspace/dev-workspace-v2/scripts/suggest-compact.js"
+            "command": "node scripts/suggest-compact.js"
           }
         ]
       }
