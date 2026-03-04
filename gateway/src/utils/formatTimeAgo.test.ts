@@ -46,8 +46,9 @@ describe('formatTimeAgo', () => {
 
   describe('future dates', () => {
     it('returns "in X" format', () => {
-      expect(formatTimeAgo(now + 60000)).toBe('in 1m')
-      expect(formatTimeAgo(now + 7200000)).toBe('in 2h')
+      // Use 90 seconds and 2.5 hours to avoid race condition with Date.now()
+      expect(formatTimeAgo(now + 90000)).toBe('in 1m')
+      expect(formatTimeAgo(now + 9000000)).toBe('in 2h')
     })
   })
 
