@@ -5,73 +5,12 @@ description: Use after subagent completes to review work. Performs spec complian
 
 # Reviewer
 
-## Overview
-
-Two-stage review system with confidence check. Use after subagent completes work.
+Two-stage review system with confidence check. Use after subagent completes.
 
 ## Review Flow
 
 ```
-Subagent reports
-    ↓
-1. Spec Compliance Review
-    ↓ Pass?
-2. Code Quality Review
-    ↓ Pass?
-3. Confidence Check (≥8/10?)
-    ↓
-Notify user or spawn fix subagent
-```
-
-## Stage 1: Spec Compliance Review
-
-Check if subagent built what was asked:
-
-```markdown
-## Spec Compliance Checklist
-
-- [ ] All requirements implemented
-- [ ] Edge cases handled
-- [ ] Error handling present
-- [ ] Expected behavior verified
-
-**Issues:** {list any deviations}
-**Verdict:** PASS / FAIL
-```
-
-## Stage 2: Code Quality Review
-
-Check if it's well-built:
-
-```markdown
-## Code Quality Checklist
-
-- [ ] Follows coding standards
-- [ ] Clean, readable code
-- [ ] Proper error handling
-- [ ] No security issues
-- [ ] Tests written and passing
-
-**Issues:** {list any problems}
-**Verdict:** PASS / FAIL
-```
-
-## Stage 3: Confidence Scoring
-
-Rate confidence in the implementation:
-
-```markdown
-## Confidence Assessment
-
-| Aspect | Score | Notes |
-|--------|-------|-------|
-| Spec Compliance | X/10 | {notes} |
-| Code Quality | X/10 | {notes} |
-| Test Coverage | X/10 | {notes} |
-| **Overall** | **X/10** | {summary} |
-
-## Recommendation
-- [ ] {actions needed before merge}
+Subagent completes → Spec Compliance → Code Quality → Confidence (≥8/10?) → Notify
 ```
 
 ## Decision Matrix
@@ -83,28 +22,23 @@ Rate confidence in the implementation:
 | PASS | PASS | < 8 | Request manual review |
 | PASS | PASS | ≥ 8 | Ready to commit |
 
-## Notification Template
+## Review Stages
 
-```typescript
-// Ready to commit
-await fetch('http://localhost:3100/reply', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    bot_id: 'pichu',
-    chat_id: sessionState.chat_id,
-    text: `✅ Done! {summary}\n\nConfidence: {score}/10\n\nFiles: {files}`
-  })
-});
+**Stage 1: Spec Compliance** - See `references/spec-checklist.md`
 
-// Needs fixes
-await fetch('http://localhost:3100/reply', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    bot_id: 'pichu',
-    chat_id: sessionState.chat_id,
-    text: `⚠️ Issues found:\n\n{issues}\n\nSpawning fix subagent...`
-  })
-});
+**Stage 2: Code Quality** - See `references/quality-checklist.md`
+
+**Stage 3: Confidence Score** - Rate 1-10, ≥8 to pass
+
+## Notification
+
+Use `scripts/reply.sh` with templates from `references/notification-templates.md`
+
+## Fix Subagent
+
+If review fails, spawn fix subagent with:
+```
+Task: Fix review issues
+Prompt: {list of issues from review}
+run_in_background: true
 ```
