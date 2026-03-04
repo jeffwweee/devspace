@@ -30,3 +30,5 @@ See `.claude/skills/writing-plans/references/handoff-template.md` for handoff sc
 - Exact commands with expected output
 - Reference relevant skills with @ syntax
 - DRY, YAGNI, TDD, frequent commits
+
+<!-- PHASE_COMPLETE: writing-plans -->
