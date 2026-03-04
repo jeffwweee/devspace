@@ -85,6 +85,7 @@ Scripts in `scripts/task-state.sh` handle state. API:
 | /evolve | Extract patterns from observations, route to memory/candidates |
 | /evolve-status | Show pending observations count |
 | /candidates | List pending candidate files for review |
+| /end-session | Generate session summary, archive, and conditionally run /evolve |
 
 ## Workflow Skills
 
@@ -133,6 +134,21 @@ List candidate files:
 1. Run `./scripts/candidates-list.sh`
 2. Send output via reply.sh
 3. Optionally use send-file.sh to send specific candidate for review
+
+## Session End Command
+
+### /end-session
+
+Complete the session with summary and archive:
+
+1. Run `./scripts/end-session.sh {chat_id}`
+2. Parse output - extract summary and OBS_COUNT
+3. Send summary via reply.sh
+4. Send archive file via send-file.sh
+5. Check observation count:
+   - If > 5: Run `node scripts/evolve.js` and report results
+   - If <= 5: Send "Observations < 5, skipping /evolve"
+6. Clear session log file: `> state/sessions/{chat_id}-log.jsonl`
 
 ## Subagent Pattern
 

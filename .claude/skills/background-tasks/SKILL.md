@@ -16,9 +16,11 @@ User can also trigger manually: "execute the plan"
 ## Process
 
 1. Load plan → Generate task ID → Reply "Started background execution..."
+   - Log: `./scripts/log-session.sh {chat_id} task_started {task_id} "{description}"`
 2. Spawn subagent with `Task(tool)` - see `references/task-template.md`
 3. Return to message loop (task runs in background)
 4. Handle completion with smart notification
+   - Log: `./scripts/log-session.sh {chat_id} task_completed {task_id} "{summary}"`
 
 ## Critical Rules
 

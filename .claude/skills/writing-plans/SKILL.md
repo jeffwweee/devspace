@@ -40,6 +40,9 @@ if [ "$(./scripts/check-doc-size.sh "$PLAN_FILE")" = "recommend" ]; then
 else
   reply "Plan saved. Ready for execution."
 fi
+
+# Log plan save for session tracking
+./scripts/log-session.sh {chat_id} plan_saved docs/plans/YYYY-MM-DD-<feature>-plan.md
 ```
 
 Replace `YYYY-MM-DD-<feature>-plan.md` with the actual plan file path.

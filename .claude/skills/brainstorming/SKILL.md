@@ -34,6 +34,7 @@ Use `scripts/reply.sh` with lettered options. See `references/telegram-format.md
 Design doc (WHAT) → Implementation plan (HOW) → Execution
 
 1. Save design to `docs/plans/YYYY-MM-DD-<topic>-design.md`
+   - Log: `./scripts/log-session.sh {chat_id} design_saved docs/plans/YYYY-MM-DD-<topic>-design.md`
 2. Send via `scripts/send-file.sh` for review
 3. **Explicit confirmation required** - Wait for approval signal
 4. If approved → invoke `writing-plans` skill
