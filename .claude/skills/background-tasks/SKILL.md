@@ -34,9 +34,18 @@ User can also trigger manually: "execute the plan"
 - `subagent-driven-development` - execution engine
 - `commander` - orchestrates flow and notifications
 
-## Error Handling
+## Error Handling with Escalation
 
 If task fails:
 1. Check TaskOutput for error details
-2. Reply to user: "Task failed: [error summary]"
-3. Offer options: "Retry with fix?", "Modify plan?", "Cancel?"
+2. Track failure count in task state
+3. If failures < 3: Auto-retry with fix subagent
+4. If failures ≥ 3: Escalate immediately
+
+**Escalation Triggers:**
+- 3 consecutive task failures
+- Fix subagent fails 3 times
+- Critical errors (auth failures, missing dependencies)
+
+**Escalation Message:**
+"Task failed after 3 attempts: [error summary]. Options: Modify plan, Cancel, Try different approach?"

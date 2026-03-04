@@ -15,12 +15,14 @@ Subagent completes → Spec Compliance → Code Quality → Confidence (≥8/10?
 
 ## Decision Matrix
 
-| Spec | Quality | Confidence | Action |
-|------|---------|------------|--------|
-| FAIL | - | - | Spawn fix subagent |
-| PASS | FAIL | - | Spawn fix subagent |
-| PASS | PASS | < 8 | Request manual review |
-| PASS | PASS | ≥ 8 | Ready to commit |
+| Spec | Quality | Confidence | Retries | Action |
+|------|---------|------------|---------|--------|
+| FAIL | - | - | < 3 | Spawn fix subagent |
+| PASS | FAIL | - | < 3 | Spawn fix subagent |
+| PASS | PASS | < 8 | - | Request manual review |
+| PASS | PASS | ≥ 8 | - | Ready to commit |
+| FAIL | - | - | ≥ 3 | Escalate to user |
+| PASS | FAIL | - | ≥ 3 | Escalate to user |
 
 ## Review Stages
 
@@ -34,7 +36,7 @@ Subagent completes → Spec Compliance → Code Quality → Confidence (≥8/10?
 
 Use `scripts/reply.sh` with templates from `references/notification-templates.md`
 
-## Fix Subagent
+## Fix Subagent with Retry Limit
 
 If review fails, spawn fix subagent with:
 ```
@@ -42,3 +44,18 @@ Task: Fix review issues
 Prompt: {list of issues from review}
 run_in_background: true
 ```
+
+**Retry Limit:** Max 3 fix attempts per task. Track via task metadata.
+After 3 failures:
+1. Mark task as "failed" with error details
+2. Escalate to user: "Task failed after 3 attempts. Options: Modify plan, Cancel, Try different approach?"
+3. Stop automatic fix attempts
+
+## Retry Tracking
+
+Track attempts in task metadata:
+```
+metadata: { retry_count: 1, last_issue: "spec compliance failed" }
+```
+
+Increment after each fix attempt. At 3 → escalate.

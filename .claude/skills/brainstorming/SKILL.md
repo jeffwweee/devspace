@@ -32,10 +32,13 @@ Design doc (WHAT) → Implementation plan (HOW) → Execution
 
 1. Save design to `docs/plans/YYYY-MM-DD-<topic>-design.md`
 2. Send via `scripts/send-file.sh` for review
-3. If approved → invoke `writing-plans` skill
-4. If changes → revise and resend
+3. **Explicit confirmation required** - Wait for approval signal
+4. If approved → invoke `writing-plans` skill
+5. If changes → revise and resend
 
 **Approval signals:** "approved", "looks good", "yes proceed", "LGTM"
+
+**Do NOT proceed** without explicit approval. If uncertain, ask: "Approve this design? (yes/no/request changes)"
 
 ## Key Principles
 

@@ -20,10 +20,18 @@ Fresh subagent per task + two-stage review = high quality, fast iteration
 
 ```
 Read plan → Create TodoWrite → For each task:
-  Dispatch implementer → Spec review → Quality review → Mark complete
+  Dispatch implementer → Spec review → Quality review → Verify → Mark complete
 ```
 
 See `references/flow.md` for detailed workflow.
+
+## Post-Verification
+
+After task completion:
+1. Run verification commands from plan (see `verification-before-completion`)
+2. Confirm all success criteria met
+3. Only then mark task complete
+4. If verification fails → trigger fix flow (max 3 retries)
 
 ## Review Stages
 
