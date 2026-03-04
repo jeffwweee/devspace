@@ -47,3 +47,5 @@ Design doc (WHAT) → Implementation plan (HOW) → Execution
 - YAGNI ruthlessly
 - Explore 2-3 approaches
 - Incremental validation
+
+<!-- PHASE_COMPLETE: brainstorming -->
