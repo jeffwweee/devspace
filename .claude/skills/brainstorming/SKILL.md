@@ -43,6 +43,23 @@ Design doc (WHAT) → Implementation plan (HOW) → Execution
 
 **Do NOT proceed** without explicit approval. If uncertain, ask: "Approve this design? (yes/no/request changes)"
 
+## After Design Saved
+
+After saving the design doc, check if it's large and recommend compact:
+
+```bash
+# Check if design doc is large
+DOC_FILE="docs/plans/YYYY-MM-DD-<topic>-design.md"  # Use actual filename
+if [ "$(./scripts/check-doc-size.sh "$DOC_FILE")" = "recommend" ]; then
+  SIZE_KB=$(du -k "$DOC_FILE" | cut -f1)
+  reply "Design saved. Doc is large (${SIZE_KB}KB). Consider /compact to free context before planning."
+else
+  reply "Design saved. Ready for planning phase."
+fi
+```
+
+Replace `YYYY-MM-DD-<topic>-design.md` with the actual design file path.
+
 ## Key Principles
 
 - One question at a time

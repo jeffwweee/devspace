@@ -27,6 +27,23 @@ See `.claude/skills/writing-plans/references/plan-template.md` for template.
 
 See `.claude/skills/writing-plans/references/handoff-template.md` for handoff scripts.
 
+## After Plan Saved
+
+After saving the implementation plan, check if it's large and recommend compact:
+
+```bash
+# Check if plan doc is large
+PLAN_FILE="docs/plans/YYYY-MM-DD-<feature>-plan.md"  # Use actual filename
+if [ "$(./scripts/check-doc-size.sh "$PLAN_FILE")" = "recommend" ]; then
+  SIZE_KB=$(du -k "$PLAN_FILE" | cut -f1)
+  reply "Plan saved. Doc is large (${SIZE_KB}KB). Consider /compact to free context before execution."
+else
+  reply "Plan saved. Ready for execution."
+fi
+```
+
+Replace `YYYY-MM-DD-<feature>-plan.md` with the actual plan file path.
+
 ## Guidelines
 
 - Exact file paths always
