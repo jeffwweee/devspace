@@ -32,3 +32,6 @@ gateway/state/files/*
 # Task state files (per-chat)
 state/tasks/*.md
 !state/tasks/TEMPLATE.md
+
+# Agenthub keys (keep private)
+.agenthub/
